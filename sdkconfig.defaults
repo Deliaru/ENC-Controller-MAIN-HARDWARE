@@ -1,0 +1,9 @@
+# This file was generated using idf.py save-defconfig. It can be edited manually.
+# Espressif IoT Development Framework (ESP-IDF) Project Minimal Configuration
+#
+CONFIG_TINYUSB_VENDOR_COUNT=1
+CONFIG_TINYUSB_HID_COUNT=0
+CONFIG_TINYUSB_CDC_COUNT=0
+CONFIG_TINYUSB_MSC_COUNT=0
+CONFIG_TINYUSB_MIDI_COUNT=0
+CONFIG_TINYUSB_CUSTOM_COUNT=0

@@ -1,0 +1,54 @@
+{
+  "C_Cpp.intelliSenseEngine": "default",
+  "idf.espIdfPathWin": "E:\\esp\\v5.4\\esp-idf",
+  "idf.toolsPathWin": "C:\\Users\\Drdesu\\.espressif",
+  "idf.pythonInstallPath": "C:\\Users\\Drdesu\\.espressif\\tools\\idf-python\\3.11.2\\python.exe",
+  "files.associations": {
+    "gpio.h": "c",
+    "sdkconfig.h": "c",
+    "gpio_my.h": "c",
+    "uart.h": "c",
+    "esp_intr_alloc.h": "c",
+    "led_strip.h": "c",
+    "main.h": "c",
+    "led_my.h": "c",
+    "hid.h": "c",
+    "task.h": "c",
+    "stdint.h": "c",
+    "tinyusb.h": "c",
+    "hid_device.h": "c",
+    "tusb.h": "c",
+    "freertos.h": "c",
+    "esp_log.h": "c",
+    "nvs_flash.h": "c"
+  },
+  "MicroPython.executeButton": [
+    {
+      "text": "▶",
+      "tooltip": "运行",
+      "alignment": "left",
+      "command": "extension.executeFile",
+      "priority": 3.5
+    }
+  ],
+  "MicroPython.syncButton": [
+    {
+      "text": "$(sync)",
+      "tooltip": "同步",
+      "alignment": "left",
+      "command": "extension.execute",
+      "priority": 4
+    }
+  ],
+  "idf.openOcdConfigs": [
+    "board/esp32s3-builtin.cfg"
+  ],
+  "idf.customExtraVars": {
+    "OPENOCD_SCRIPTS": "d:\\esp-idf\\IDF-TOOLS-PATH\\tools\\openocd-esp32\\v0.12.0-esp32-20240318/openocd-esp32/share/openocd/scripts",
+    "IDF_CCACHE_ENABLE": "1",
+    "ESP_ROM_ELF_DIR": "d:\\esp-idf\\IDF-TOOLS-PATH\\tools\\esp-rom-elfs\\20240305/",
+    "IDF_TARGET": "esp32s3"
+  },
+  "idf.portWin": "COM8",
+  "idf.flashType": "UART"
+}
