@@ -23,6 +23,9 @@ static bool s_last_led_valid = false;
 // 递归互斥锁用于保护对LED硬件的并发访问
 static SemaphoreHandle_t s_led_mutex = NULL;
 
+// 保护共享输入缓冲区的临界区锁
+static portMUX_TYPE s_winusb_lock = portMUX_INITIALIZER_UNLOCKED;
+
 // Microsoft OS 2.0 描述符请求代码
 #define VENDOR_REQUEST_MICROSOFT 0xEE
 #define VENDOR_REQUEST_WEBUSB    0xED
@@ -186,7 +189,7 @@ uint16_t tud_vendor_get_report_cb(uint8_t instance, uint8_t report_id, uint8_t* 
 void tud_vendor_rx_cb(uint8_t itf, uint8_t const* buffer, uint16_t bufsize)
 {
     if (buffer == NULL) {
-        ESP_LOGE(TAG, "Received NULL buffer in vendor RX callback");
+        ESP_LOGW(TAG, "Received NULL buffer in vendor RX callback");
         return;
     }
     
@@ -402,17 +405,19 @@ bool winusb_new_get_data(input_data_t *input_data)
     
     // 检查是否有数据可用
     if (g_last_input_data_len > 0 && g_last_input_data_len <= sizeof(input_data_t)) {
+        // 使用临界区保护读取，防止与 USB 回调并发写入冲突
+        portENTER_CRITICAL(&s_winusb_lock);
+        uint16_t copy_len = g_last_input_data_len; // 保存长度
         // 清零目标缓冲区
         memset(input_data, 0, sizeof(input_data_t));
-        
-        // 安全拷贝数据
-        memcpy(input_data, &g_last_input_data, g_last_input_data_len);
-        
-        ESP_LOGD(TAG, "Copied %u bytes of input data", (unsigned int)g_last_input_data_len);
-        
-        // 原子操作：清空数据长度
-        g_last_input_data_len = 0; // 清空标志
-        
+        // 只拷贝有效的字节
+        memcpy(input_data, &g_last_input_data, copy_len);
+        // 日志
+        ESP_LOGD(TAG, "Copied %u bytes of input data", (unsigned int)copy_len);
+        // 清空标志（在临界区内清零，保证一致性）
+        g_last_input_data_len = 0;
+        portEXIT_CRITICAL(&s_winusb_lock);
+
         has_data = true;
     } else if (g_last_input_data_len > sizeof(input_data_t)) {
         ESP_LOGW(TAG, "Input data too large: %d bytes, max allowed %d", 
@@ -765,14 +770,6 @@ void winusb_detailed_status(void)
 void winusb_reset_connection(void)
 {
     // 清空所有缓冲区
-    g_last_input_data_len = 0;
-    memset(&g_last_input_data, 0, sizeof(input_data_t));
-    g_led_data_pending = false;
-    // 清空上一帧IO4缓存
-    memset(s_prev_io4_leds, 0, sizeof(s_prev_io4_leds));
-    s_prev_io4_valid = false;
-    
-    // 刷新USB缓冲区
     if (tud_mounted() && tud_vendor_mounted()) {
         tud_vendor_write_flush();
         // 清空接收缓冲区

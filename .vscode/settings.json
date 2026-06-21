@@ -49,6 +49,7 @@
     "ESP_ROM_ELF_DIR": "d:\\esp-idf\\IDF-TOOLS-PATH\\tools\\esp-rom-elfs\\20240305/",
     "IDF_TARGET": "esp32s3"
   },
-  "idf.portWin": "COM14",
-  "idf.flashType": "UART"
+  "idf.portWin": "COM9",
+  "idf.flashType": "UART",
+  "idf.currentSetup": "D:\\ESPIDF\\.espressif\\v5.4.3\\esp-idf"
 }
